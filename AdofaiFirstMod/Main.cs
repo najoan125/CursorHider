@@ -11,8 +11,6 @@ namespace AdofaiFirstMod
 	internal static class Main
 	{
 		public static bool Hiden = false;
-		public static bool EditCheck = false;
-		public static Setting setting;
 		[DllImport("user32.dll")]
 		public static extern int ShowCursor(bool bShow);
 		// Token: 0x17000001 RID: 1
@@ -26,15 +24,11 @@ namespace AdofaiFirstMod
 			Main.Mod = modEntry;
 			Main.Mod.OnToggle = new Func<UnityModManager.ModEntry, bool, bool>(Main.OnToggle);
 			Main.Mod.OnUpdate = new Action<UnityModManager.ModEntry, float>(Main.OnUpdate);
-			setting = new Setting();
-			setting = UnityModManager.ModSettings.Load<Setting>(modEntry);
 		}
 
 		// Token: 0x06000004 RID: 4 RVA: 0x00002080 File Offset: 0x00000280
 		private static bool OnToggle(UnityModManager.ModEntry modEntry, bool value)
 		{
-			modEntry.OnGUI = OnGUI;
-			modEntry.OnSaveGUI = OnSaveGUI;
 			Main.IsEnabled = value;
 			if (value)
 			{
@@ -49,9 +43,12 @@ namespace AdofaiFirstMod
 
 		private static void OnUpdate(UnityModManager.ModEntry modentry, float deltaTime)
         {
+			if (!scrController.instance || !scrConductor.instance)
+            {
+				return;
+            }
 			bool playing = !scrController.instance.paused && scrConductor.instance.isGameWorld;
-			bool SettingEditorShow = setting.EditorShow && scrConductor.instance.edit;
-			if (!scrController.instance.paused && scrConductor.instance.isGameWorld && !Main.Hiden && !SettingEditorShow)
+			if (!scrController.instance.paused && scrConductor.instance.isGameWorld && !Main.Hiden)
 			{
 				Main.ShowCursor(false);
 				Main.Hiden = true;
@@ -62,24 +59,6 @@ namespace AdofaiFirstMod
 				Main.Hiden = false;
 			}
 		}
-
-		private static void OnGUI(UnityModManager.ModEntry modEntry)
-        {
-			bool Editor = GUILayout.Toggle(setting.EditorShow, "에디터에서 마우스 표시");
-			if (Editor)
-            {
-				setting.EditorShow = true;
-            }
-			if (!Editor)
-            {
-				setting.EditorShow = false;
-            }
-        }
-
-		private static void OnSaveGUI(UnityModManager.ModEntry modEntry)
-        {
-			setting.Save(modEntry);
-        }
 
 		// Token: 0x06000005 RID: 5 RVA: 0x000020B4 File Offset: 0x000002B4
 		private static void Start()
