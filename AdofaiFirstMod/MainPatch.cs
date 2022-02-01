@@ -5,29 +5,18 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using UnityModManagerNet;
 
 namespace AdofaiFirstMod.MainPatch
 {
-    [HarmonyPatch(typeof(scrController), "PlayerControl_Update")]
-    internal static class HideCursor
+    public static class Patches
     {
-        [HarmonyPatch(typeof(scrController), "FailAction")]
-        private static void Prefix()
+        [HarmonyPatch(typeof(scnEditor),"Play")]
+        public static class PlayPatch
         {
-
-        }
-        private static void Postfix()
-        {
-            bool playing = !scrController.instance.paused && scrConductor.instance.isGameWorld;
-            if (!scrController.instance.paused && scrConductor.instance.isGameWorld && !Main.Hiden)
+            public static void Prefix()
             {
-                Main.ShowCursor(false);
-                Main.Hiden = true;
-            }
-            else if (!playing && Main.Hiden)
-            {
-                Main.ShowCursor(true);
-                Main.Hiden = false;
+                Main.SettingEditorShow = true;
             }
         }
     }
