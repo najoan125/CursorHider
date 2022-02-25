@@ -50,6 +50,16 @@ namespace AdofaiFirstMod
 			bool playing = !scrController.instance.paused && scrConductor.instance.isGameWorld;
 			bool settingCheck = SettingEditorShow && setting.EditorShow;
 
+			if (!playing && !Cursor.visible)
+            {
+				Cursor.visible = true;
+				Cursor.lockState = CursorLockMode.None;
+			}
+			if (playing && !settingCheck && Cursor.visible)
+            {
+				Cursor.visible = false;
+            }
+
 
 			if (playing && !Main.Hiden && !settingCheck)
 			{
@@ -60,12 +70,14 @@ namespace AdofaiFirstMod
 			else if (!playing && Main.Hiden)
 			{
 				Cursor.visible = true;
-                Main.Hiden = false;
+				Cursor.lockState = CursorLockMode.None;
+				Main.Hiden = false;
 				//UnityModManager.Logger.Log("!playing && Main.Hiden");
             }
 			else if (settingCheck && !once)
             {
 				Cursor.visible = true;
+				Cursor.lockState = CursorLockMode.None;
 				once = true;
 				//UnityModManager.Logger.Log("settingcheck");
 			}
